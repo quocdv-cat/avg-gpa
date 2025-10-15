@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ tính GPA - Đại học Điện Lực (EPU)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-700">Công cụ tính điểm GPA Đại học Điện Lực</h1>
+            <p class="text-gray-600 mt-2">Nhập điểm các môn học để tính điểm trung bình tích lũy hệ 4</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content: Input courses -->
+            <main class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <h2 class="text-xl font-semibold text-gray-700">Danh sách môn học</h2>
+                    <button id="add-course-btn"
+                        class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        Thêm môn
+                    </button>
+                </div>
+
+                <!-- Weighting Inputs -->
+                <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                     <h3 class="text-md font-semibold text-gray-800 mb-3 text-center">Tỷ lệ điểm thành phần</h3>
+                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <div class="flex-1">
+                            <label for="regular-weight" class="block text-sm font-medium text-gray-700">Thường kỳ (%)</label>
+                            <input type="number" id="regular-weight" value="30" min="0" max="100" class="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex-1">
+                            <label for="final-weight" class="block text-sm font-medium text-gray-700">Cuối kỳ (%)</label>
+                            <input type="number" id="final-weight" value="70" min="0" max="100" class="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course inputs container -->
+                <div id="courses-container" class="space-y-4">
+                    <!-- Course row template -->
+                    <div class="grid grid-cols-12 gap-2 items-center course-row fade-in">
+                        <div class="col-span-12 sm:col-span-4">
+                            <input type="text" placeholder="Tên môn học (không bắt buộc)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        </div>
+                        <div class="col-span-6 sm:col-span-2">
+                            <input type="number" min="0" placeholder="Số TC" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition credits" required>
+                        </div>
+                        <div class="col-span-6 sm:col-span-2">
+                            <input type="number" min="0" max="10" step="0.1" placeholder="TB TK" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition regular-avg" required>
+                        </div>
+                        <div class="col-span-6 sm:col-span-2">
+                             <input type="number" min="0" max="10" step="0.1" placeholder="Điểm CK" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition final-exam" required>
+                        </div>
+                        <div class="col-span-6 sm:col-span-2 flex justify-end">
+                            <button class="remove-course-btn bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition-all duration-300 shadow w-full sm:w-auto">
+                                Xóa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 text-center">
+                    <button id="calculate-btn"
+                        class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-lg text-lg">
+                        Tính GPA
+                    </button>
+                </div>
+                 <!-- Result Display -->
+                <div id="result-container" class="mt-8 text-center hidden">
+                     <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg shadow-inner">
+                        <p class="text-lg text-gray-600">Điểm trung bình tích lũy (GPA) của bạn là:</p>
+                        <p id="gpa-result" class="text-5xl font-bold text-blue-700 my-2">0.00</p>
+                        <p class="text-lg">Xếp loại: <span id="classification-result" class="font-semibold text-blue-800"></span></p>
+                     </div>
+                </div>
+                <div id="error-message" class="mt-4 text-center text-red-600 font-medium hidden"></div>
+            </main>
+
+            <!-- Sidebar: Conversion Table and Info -->
+            <aside class="lg:col-span-1 space-y-8">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Bảng quy đổi điểm</h3>
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-2 font-semibold">Thang điểm 10</th>
+                                <th class="p-2 font-semibold">Thang điểm chữ</th>
+                                <th class="p-2 font-semibold">Thang điểm 4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-2">8.5 - 10</td>
+                                <td class="p-2 font-medium">A</td>
+                                <td class="p-2 font-medium">4.0</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-2">8.0 - 8.4</td>
+                                <td class="p-2 font-medium">B+</td>
+                                <td class="p-2 font-medium">3.5</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-2">7.0 - 7.9</td>
+                                <td class="p-2 font-medium">B</td>
+                                <td class="p-2 font-medium">3.0</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-2">6.5 - 6.9</td>
+                                <td class="p-2 font-medium">C+</td>
+                                <td class="p-2 font-medium">2.5</td>
+                            </tr>
+                             <tr class="border-b">
+                                <td class="p-2">5.5 - 6.4</td>
+                                <td class="p-2 font-medium">C</td>
+                                <td class="p-2 font-medium">2.0</td>
+                            </tr>
+                             <tr class="border-b">
+                                <td class="p-2">5.0 - 5.4</td>
+                                <td class="p-2 font-medium">D+</td>
+                                <td class="p-2 font-medium">1.5</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-2">4.0 - 4.9</td>
+                                <td class="p-2 font-medium">D</td>
+                                <td class="p-2 font-medium">1.0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2">Dưới 4.0</td>
+                                <td class="p-2 font-medium">F</td>
+                                <td class="p-2 font-medium">0.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">Xếp loại học lực</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><span class="font-semibold text-green-700">Xuất sắc:</span> GPA &ge; 3.60</li>
+                        <li><span class="font-semibold text-blue-700">Giỏi:</span> 3.20 &le; GPA &lt; 3.60</li>
+                        <li><span class="font-semibold text-yellow-700">Khá:</span> 2.50 &le; GPA &lt; 3.20</li>
+                        <li><span class="font-semibold text-orange-700">Trung bình:</span> 2.00 &le; GPA &lt; 2.50</li>
+                        <li><span class="font-semibold text-red-700">Yếu:</span> GPA &lt; 2.00</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+         <!-- Footer -->
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2024 - Công cụ được phát triển để hỗ trợ sinh viên Đại học Điện Lực.</p>
+            <p>Bảng quy đổi điểm và xếp loại chỉ mang tính chất tham khảo dựa trên quy chế chung.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const coursesContainer = document.getElementById('courses-container');
+            const addCourseBtn = document.getElementById('add-course-btn');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const gpaResultEl = document.getElementById('gpa-result');
+            const classificationResultEl = document.getElementById('classification-result');
+            const resultContainer = document.getElementById('result-container');
+            const errorMessageEl = document.getElementById('error-message');
+            const regularWeightInput = document.getElementById('regular-weight');
+            const finalWeightInput = document.getElementById('final-weight');
+
+            const createCourseRow = () => {
+                const row = document.createElement('div');
+                row.className = 'grid grid-cols-12 gap-2 items-center course-row fade-in';
+                row.innerHTML = `
+                    <div class="col-span-12 sm:col-span-4">
+                        <input type="text" placeholder="Tên môn học (không bắt buộc)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                    </div>
+                    <div class="col-span-6 sm:col-span-2">
+                        <input type="number" min="0" placeholder="Số TC" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition credits" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-2">
+                        <input type="number" min="0" max="10" step="0.1" placeholder="TB TK" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition regular-avg" required>
+                    </div>
+                     <div class="col-span-6 sm:col-span-2">
+                         <input type="number" min="0" max="10" step="0.1" placeholder="Điểm CK" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition final-exam" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-2 flex justify-end">
+                        <button class="remove-course-btn bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition-all duration-300 shadow w-full sm:w-auto">Xóa</button>
+                    </div>
+                `;
+                coursesContainer.appendChild(row);
+            };
+
+            addCourseBtn.addEventListener('click', createCourseRow);
+
+            coursesContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-course-btn')) {
+                    if (coursesContainer.children.length > 1) {
+                         e.target.closest('.course-row').remove();
+                    } else {
+                        showError("Bạn phải có ít nhất một môn học.");
+                    }
+                }
+            });
+
+            const convertGradeTo4 = (grade10) => {
+                if (grade10 >= 8.5) return 4.0;
+                if (grade10 >= 8.0) return 3.5;
+                if (grade10 >= 7.0) return 3.0;
+                if (grade10 >= 6.5) return 2.5;
+                if (grade10 >= 5.5) return 2.0;
+                if (grade10 >= 5.0) return 1.5;
+                if (grade10 >= 4.0) return 1.0;
+                return 0.0;
+            };
+
+            const getClassification = (gpa) => {
+                if (gpa >= 3.6) return 'Xuất sắc';
+                if (gpa >= 3.2) return 'Giỏi';
+                if (gpa >= 2.5) return 'Khá';
+                if (gpa >= 2.0) return 'Trung bình';
+                return 'Yếu';
+            };
+
+            const showError = (message) => {
+                errorMessageEl.textContent = message;
+                errorMessageEl.classList.remove('hidden');
+                setTimeout(() => {
+                    errorMessageEl.classList.add('hidden');
+                }, 4000);
+            };
+
+            calculateBtn.addEventListener('click', () => {
+                let totalCredits = 0;
+                let totalWeightedPoints = 0;
+                let hasValidInput = false;
+
+                const regularWeight = parseFloat(regularWeightInput.value) || 0;
+                const finalWeight = parseFloat(finalWeightInput.value) || 0;
+                
+                if (regularWeight + finalWeight !== 100) {
+                    showError("Tổng tỷ lệ thường kỳ và cuối kỳ phải bằng 100%.");
+                    return;
+                }
+
+                const courseRows = document.querySelectorAll('.course-row');
+                errorMessageEl.classList.add('hidden');
+                document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+
+                courseRows.forEach(row => {
+                    const creditsInput = row.querySelector('.credits');
+                    const regularAvgInput = row.querySelector('.regular-avg');
+                    const finalExamInput = row.querySelector('.final-exam');
+
+                    const credits = parseFloat(creditsInput.value);
+                    const regularAvg = parseFloat(regularAvgInput.value);
+                    const finalExam = parseFloat(finalExamInput.value);
+                    
+                    let isValidRow = true;
+                    if (isNaN(credits) || credits <= 0) {
+                        if(creditsInput.value) creditsInput.classList.add('border-red-500');
+                        isValidRow = false;
+                    }
+                    if (isNaN(regularAvg) || regularAvg < 0 || regularAvg > 10) {
+                         if(regularAvgInput.value) regularAvgInput.classList.add('border-red-500');
+                         isValidRow = false;
+                    }
+                    if (isNaN(finalExam) || finalExam < 0 || finalExam > 10) {
+                         if(finalExamInput.value) finalExamInput.classList.add('border-red-500');
+                         isValidRow = false;
+                    }
+
+
+                    if (isValidRow && (creditsInput.value || regularAvgInput.value || finalExamInput.value) ) {
+                        const grade10 = (regularAvg * regularWeight / 100) + (finalExam * finalWeight / 100);
+                        const grade4 = convertGradeTo4(grade10);
+                        totalWeightedPoints += grade4 * credits;
+                        totalCredits += credits;
+                        hasValidInput = true;
+                    }
+                });
+
+                if (totalCredits === 0) {
+                     if(!hasValidInput) {
+                        showError("Vui lòng nhập thông tin hợp lệ. Tín chỉ phải lớn hơn 0 và điểm từ 0 đến 10.");
+                     }
+                    resultContainer.classList.add('hidden');
+                    return;
+                }
+
+                const gpa = totalWeightedPoints / totalCredits;
+                gpaResultEl.textContent = gpa.toFixed(2);
+                classificationResultEl.textContent = getClassification(gpa);
+                resultContainer.classList.remove('hidden');
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+
