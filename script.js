@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const conversionWrapper = document.getElementById('conversion-wrapper');
     const loadingSpinner = document.getElementById('loading-spinner');
 
-    // Gemini API Elements
     const geminiFeedbackSection = document.getElementById('gemini-feedback-section');
     const getFeedbackBtn = document.getElementById('get-feedback-btn');
     const feedbackLoading = document.getElementById('feedback-loading');
@@ -106,16 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
          ]
     };
     
-    // ✨ Cập nhật hàm gọi API để sử dụng proxy an toàn
     const fetchGeminiFeedback = async (prompt) => {
-        // Đường dẫn tới "người trung gian" của chúng ta trên Netlify
         const proxyUrl = '/.netlify/functions/call-gemini';
 
         try {
             const response = await fetch(proxyUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: prompt }) // Gửi prompt tới "người trung gian"
+                body: JSON.stringify({ prompt: prompt }) // Gửi prompt
             });
             
             if (!response.ok) {
@@ -145,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const option = document.createElement('option');
             option.value = uni.id;
             option.textContent = uni.name;
-            if(uni.id === 'EPU' && filter === '') { // Set default
+            if(uni.id === 'EPU' && filter === '') { 
                 option.selected = true;
             }
             universitySelect.appendChild(option);
@@ -347,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
         resultContainer.classList.remove('hidden');
         resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // Reset and show Gemini feature
         geminiFeedbackSection.classList.remove('hidden');
         getFeedbackBtn.classList.remove('hidden');
         feedbackResult.classList.add('hidden');
@@ -397,7 +393,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const feedbackText = await fetchGeminiFeedback(userPrompt);
         
-        // Simple Markdown to HTML conversion
         let formattedFeedback = feedbackText
           .replace(/(\d\.)/g, '<br><strong>$1</strong>')
           .replace(/\n- /g, '<br>&bull; ')
@@ -410,8 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
         feedbackResult.classList.remove('hidden');
     });
 
-
-    // Initial setup
     populateUniversityList();
     createCourseRow();
 });

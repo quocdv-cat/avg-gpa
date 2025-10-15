@@ -1,7 +1,6 @@
 body {
     font-family: 'Inter', sans-serif;
     }
-    /* Custom scrollbar for better aesthetics */
     ::-webkit-scrollbar {
     width: 8px;
     }
