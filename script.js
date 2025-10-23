@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const feedbackLoading = document.getElementById('feedback-loading');
     const feedbackResult = document.getElementById('feedback-result');
     
+    // [BẮT ĐẦU] Thêm biến cho vùng chứa quảng cáo
+    const adContainer = document.getElementById('ad-container');
+    // [KẾT THÚC] Thêm biến cho vùng chứa quảng cáo
+
     const universities = [
         { id: 'AJC', name: 'Học viện Báo chí và Tuyên truyền (AJC)' },
         { id: 'PTIT', name: 'Học viện Bưu chính Viễn thông (PTIT)' },
@@ -335,6 +339,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalCredits === 0) {
              if(!hasValidInput) { showError("Vui lòng nhập thông tin hợp lệ. Tín chỉ phải lớn hơn 0 và điểm từ 0 đến 10."); }
             resultContainer.classList.add('hidden');
+            
+            // [BẮT ĐẦU] Ẩn quảng cáo nếu không có kết quả
+            if (adContainer) {
+                adContainer.classList.add('hidden');
+            }
+            // [KẾT THÚC] Ẩn quảng cáo
             return;
         }
 
@@ -343,6 +353,14 @@ document.addEventListener('DOMContentLoaded', () => {
         classificationResultEl.textContent = getClassification(gpa);
         resultContainer.classList.remove('hidden');
         resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // [BẮT ĐẦU] Hiển thị quảng cáo sau khi có kết quả
+        if (adContainer) {
+            adContainer.classList.remove('hidden');
+            // Yêu cầu tải quảng cáo
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+        // [KẾT THÚC] Hiển thị quảng cáo
 
         geminiFeedbackSection.classList.remove('hidden');
         getFeedbackBtn.classList.remove('hidden');
@@ -407,5 +425,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     populateUniversityList();
     createCourseRow();
+    // Hiển thị bảng quy đổi cho trường mặc định (EPU) khi tải trang
+    showConversionTable('EPU');
 });
-

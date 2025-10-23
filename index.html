@@ -83,6 +83,27 @@
                         <p class="text-lg">Xếp loại: <span id="classification-result" class="font-semibold text-blue-800"></span></p>
                      </div>
                 </div>
+
+                <!-- [BẮT ĐẦU] Thay đổi để sửa lỗi chính sách AdSense -->
+                <!-- Vùng chứa quảng cáo này bị ẩn theo mặc định -->
+                <div id="ad-container" class="hidden mt-6">
+                    <!-- 
+                      QUAN TRỌNG: 
+                      1. Thay 'YOUR_AD_SLOT_ID' bằng Mã đơn vị quảng cáo (Ad slot ID) của bạn từ AdSense.
+                      2. Đảm bảo mã 'ca-pub-6089437341639692' là chính xác.
+                    -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-6089437341639692"
+                         data-ad-slot="YOUR_AD_SLOT_ID" 
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+                <!-- [KẾT THÚC] Thay đổi để sửa lỗi chính sách AdSense -->
+                
                 <div id="gemini-feedback-section" class="mt-6 text-center hidden">
                     <button id="get-feedback-btn" class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300 shadow-lg text-lg w-full max-w-md mx-auto">
                         ✨ Nhận Phân tích & Lời khuyên từ AI
@@ -140,7 +161,7 @@
             </aside>
         </div>
         <footer class="text-center mt-12 text-gray-500 text-sm">
-            <p>&copy; 2024 - Công cụ tính điểm GPA.</p>
+            <p>&copy; 2025 - Công cụ tính điểm GPA.</p>
             <p>Bảng quy đổi điểm và xếp loại chỉ mang tính chất tham khảo dựa trên quy chế chung.</p>
         </footer>
     </div>
@@ -148,4 +169,3 @@
     <script src="script.js" defer></script>
 </body>
 </html>
-
